@@ -1,0 +1,5 @@
+# a simple sum function in R
+# 
+somma2<-function(x,y){
+x+y
+}
