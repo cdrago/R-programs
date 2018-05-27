@@ -1,0 +1,105 @@
+
+#########################################################################
+#
+# Tutorial: La costruzione di un indicatore di resilienza in R
+#
+# Carlo Drago*  **  ***
+#
+# * Università degli Studi di Roma "Niccolò Cusano", ** NC University London UK, *** CED
+#
+# Festival dello Sviluppo Sostenibile 2018
+#
+##########################################################################
+
+# Importazione dei dati in R
+
+# dat<-read.delim('clipboard')
+
+# Definizione degli indicatori considerati
+
+vv1<-dat[,3]
+
+vv2<-dat[,4]
+
+vv3<-dat[,5]
+
+Countries<-dat[,1]
+
+# Costruzione delle graduatorie per singolo indicatore
+
+dat2<-data.frame(Countries,Energy_Access=vv1)
+
+classifica1<-dat2[order(-vv1,Countries)]
+
+classifica1
+
+
+dat3<-data.frame(Countries,Energy_Efficiency=vv2)
+
+classifica2<-dat3[order(-vv2),]
+
+classifica2 
+
+
+dat4<-data.frame(Countries,Renewable_Energy=vv3)
+
+classifica3<-dat2[order(-vv3),]
+
+classifica3
+
+# Classifica per Regione
+
+newdata <- subset(dat, Regione=="OECD high income", select=c(Countries, Energy.Access,Regione))
+
+classifica4<-newdata[order(-newdata$Energy.Access),]
+
+classifica4
+
+###########################################################################
+# Analisi descrittiva dei dati
+
+summary(dat)
+
+# Analisi dei dati per regione
+
+var<-factor(dat$Regione)
+
+tapply(dat$Energy.Access,var,mean)
+
+tapply(dat$Energy.Efficiency,var,mean)
+
+tapply(dat$Renewable.Energy,var,mean)
+
+############################################################################
+
+
+# Costruzione dell'indicatore composito
+
+# Definizione dei pesi usati
+
+w1<-1/3
+
+w2<-w1
+
+w3<-w1
+
+
+# Calcolo dell'indicatore di riferimento
+
+comind<-w1*vv1+w2*vv2+w3*vv3
+
+# Costruzione della graduatoria finale in relazione all'indicatore composito calcolato
+
+comind2<-round(comind,2)
+
+dat5<-data.frame(Countries,Composite_Indicator=comind2)
+
+classifica5<-dat5[order(-comind2),]
+
+classifica5
+
+
+
+
+
+
