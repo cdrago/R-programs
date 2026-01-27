@@ -96,14 +96,15 @@ kmeans_algorithm <- function(data, k, max_iter = 100, seed = NULL) {
     }
   }
   
-  # Calculate within-cluster sum of squares (WCSS)
+  # Calculate within-cluster sum of squares (WCSS) using vectorized operations
   wcss <- 0
   for (j in 1:k) {
     cluster_points <- data[clusters == j, , drop = FALSE]
     if (nrow(cluster_points) > 0) {
-      for (i in 1:nrow(cluster_points)) {
-        wcss <- wcss + sum((cluster_points[i, ] - centers[j, ])^2)
-      }
+      # Vectorized calculation: subtract center from all points and sum squared distances
+      center_matrix <- matrix(centers[j, ], nrow = nrow(cluster_points), ncol = p, byrow = TRUE)
+      distances_sq <- rowSums((cluster_points - center_matrix)^2)
+      wcss <- wcss + sum(distances_sq)
     }
   }
   
@@ -233,7 +234,8 @@ cat("\n\n===== Example 4: Comparison with Built-in kmeans() =====\n\n")
 # Run our implementation
 our_result <- kmeans_algorithm(sample_data, k = 3, seed = 42)
 
-# Run R's built-in kmeans
+# Run R's built-in kmeans with same seed for fair comparison
+set.seed(42)
 builtin_result <- kmeans(sample_data, centers = 3, nstart = 1)
 
 cat("Our implementation WCSS:", round(our_result$wcss, 2), "\n")
