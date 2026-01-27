@@ -100,6 +100,33 @@ classifica5
 
 
 
+############################################################################
+# Clustering k-means sugli indicatori di resilienza
+
+# Preparazione della matrice con gli indicatori normalizzati
+indicator_matrix <- scale(dat[, c("Energy.Access", "Energy.Efficiency", "Renewable.Energy")])
+
+# Scelta del numero di cluster e impostazione del seme per la replicabilità
+set.seed(123)
+k_clusters <- 3
+
+# Esecuzione del modello k-means con più partenze per evitare minimi locali
+kmeans_resilience <- kmeans(indicator_matrix, centers = k_clusters, nstart = 25)
+
+# Associazione del cluster a ciascun Paese
+clustered_data <- cbind(dat[, c("Countries", "Regione")], Cluster = kmeans_resilience$cluster)
+clustered_data
+
+# Statistiche descrittive per cluster sugli indicatori originali
+aggregate(dat[, c("Energy.Access", "Energy.Efficiency", "Renewable.Energy")],
+          by = list(Cluster = kmeans_resilience$cluster),
+          FUN = mean)
+
+# Verifica delle dimensioni e delle coordinate centrali dei cluster
+kmeans_resilience$size
+kmeans_resilience$centers
+
+
 
 
 
